@@ -15,19 +15,17 @@ interface SettingsTabProps {
     taper_start_cap?: number | null;
     taper_end_cap?: number | null;
   }) => void;
-  onReset: () => void;
   onSignIn: (email: string) => void;
   onSignOut: () => void;
 }
 
-export function SettingsTab({ user, data, supabaseReady, onSettings, onReset, onSignIn, onSignOut }: SettingsTabProps) {
+export function SettingsTab({ user, data, supabaseReady, onSettings, onSignIn, onSignOut }: SettingsTabProps) {
   const [email, setEmail] = useState('');
   const currentCap = capForDay(data.settings);
 
   return (
     <section className="screen">
-      <div className="screen-heading">
-        <p>Preferences</p>
+      <div className="screen-heading centered-heading">
         <h1>Settings</h1>
       </div>
 
@@ -62,11 +60,6 @@ export function SettingsTab({ user, data, supabaseReady, onSettings, onReset, on
             <button type="button" disabled={!supabaseReady || !email} onClick={() => onSignIn(email)}>Send magic link</button>
           </>
         )}
-      </div>
-
-      <div className="form-card">
-        <h2>Data</h2>
-        <button className="secondary" type="button" onClick={onReset}>Reset demo data</button>
       </div>
     </section>
   );

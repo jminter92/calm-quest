@@ -29,7 +29,11 @@ export function TodayTab({ data, onAwardDailyCap }: TodayTabProps) {
           <p>{prettyDate()}</p>
           <h1>Calm Quest</h1>
         </div>
-        <div className="title-pill">{title}</div>
+      </div>
+
+      <div className="level-panel">
+        <span>Current level</span>
+        <strong>{title}</strong>
       </div>
 
       <div className="cap-panel">

@@ -50,7 +50,7 @@ export function LogTab({ onCaffeine }: LogTabProps) {
 
   return (
     <section className="screen">
-      <div className="screen-heading">
+      <div className="screen-heading centered-heading">
         <h1>Log</h1>
       </div>
 

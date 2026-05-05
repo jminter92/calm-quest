@@ -1,6 +1,6 @@
 import { type ReactElement, useEffect, useState } from 'react';
 import { BottomNav } from './components/BottomNav';
-import { addCaffeineLog, addXpEvents, demoUser, loadData, resetLocalData, saveSettings } from './lib/storage';
+import { addCaffeineLog, addXpEvents, demoUser, loadData, saveSettings } from './lib/storage';
 import { hasSupabaseConfig, supabase } from './lib/supabase';
 import { toDayKey } from './lib/dates';
 import { xpAmounts } from './lib/xp';
@@ -120,7 +120,6 @@ export default function App() {
         data={data}
         supabaseReady={hasSupabaseConfig}
         onSettings={(patch) => run(() => saveSettings(user, requireData(), patch), 'Settings saved.')}
-        onReset={() => run(async () => resetLocalData(), 'Demo data reset.')}
         onSignIn={(email) =>
           run(async () => {
             if (!supabase) throw new Error('Supabase is not configured.');
@@ -135,7 +134,7 @@ export default function App() {
         onSignOut={() =>
           run(async () => {
             await supabase?.auth.signOut();
-            return resetLocalData();
+            return loadData(demoUser());
           }, 'Signed out. Demo mode is ready.')
         }
       />

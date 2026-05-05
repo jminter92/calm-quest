@@ -124,6 +124,28 @@ h2 {
   text-align: center;
 }
 
+.level-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid #d2e2ea;
+  border-radius: 8px;
+  background: rgba(251, 253, 255, 0.88);
+  padding: 0.85rem 1rem;
+}
+
+.level-panel span {
+  color: #61717c;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.level-panel strong {
+  color: #256f8f;
+  text-align: right;
+}
+
 .install-button {
   width: 100%;
   margin-bottom: 0.75rem;
