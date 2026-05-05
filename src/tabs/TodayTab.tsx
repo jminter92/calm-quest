@@ -1,39 +1,23 @@
 import { MetricCard } from '../components/MetricCard';
 import { prettyDate, toDayKey } from '../lib/dates';
-import { shotsForDay, streakUnderCap, totalXp } from '../lib/progress';
-import { titleForXp, xpAmounts } from '../lib/xp';
-import type { AppUser, CalmQuestData } from '../types';
+import { activeDayKeys, capForDay, shotsForDay, streakUnderCap, totalXp } from '../lib/progress';
+import { titleForXp } from '../lib/xp';
+import type { CalmQuestData } from '../types';
 
 interface TodayTabProps {
-  user: AppUser;
   data: CalmQuestData;
-  onQuickCaffeine: () => void;
-  onQuickTrigger: () => void;
-  onQuickWin: () => void;
-  onQuickSetback: () => void;
-  onCheckin: (field: 'mood' | 'energy' | 'sleep_quality', value: number) => void;
-  onAwardDailyCap: () => void;
 }
 
-export function TodayTab({
-  data,
-  onQuickCaffeine,
-  onQuickTrigger,
-  onQuickWin,
-  onQuickSetback,
-  onCheckin,
-  onAwardDailyCap
-}: TodayTabProps) {
+export function TodayTab({ data }: TodayTabProps) {
   const today = toDayKey();
-  const cap = Number(data.settings.caffeine_cap);
+  const cap = capForDay(data.settings, today);
   const used = shotsForDay(data.caffeineLogs, today);
   const remaining = Math.max(0, cap - used);
-  const percent = Math.min(100, (used / cap) * 100);
-  const streak = streakUnderCap(data.caffeineLogs, cap);
+  const percent = Math.min(100, (used / Math.max(cap, 0.5)) * 100);
+  const activeDays = activeDayKeys(data.caffeineLogs, data.triggerLogs, data.checkins, data.xpEvents);
+  const streak = streakUnderCap(data.caffeineLogs, cap, activeDays);
   const xp = totalXp(data.xpEvents);
   const title = titleForXp(xp);
-  const checkin = data.checkins.find((item) => item.day === today);
-  const hasCapXp = data.xpEvents.some((event) => event.related_date === today && event.event_type === 'stayed_under_cap');
   const recentLogs = [
     ...data.caffeineLogs.filter((log) => toDayKey(new Date(log.logged_at)) === today).map((log) => ({
       id: log.id,
@@ -77,32 +61,10 @@ export function TodayTab({
         <MetricCard label="XP" value={xp} detail="total earned" />
       </div>
 
-      <div className="quick-grid">
-        <button type="button" onClick={onQuickCaffeine}>Add caffeine</button>
-        <button type="button" onClick={onQuickTrigger}>Add trigger</button>
-        <button type="button" onClick={onQuickWin}>Log win</button>
-        <button type="button" onClick={onQuickSetback}>Log setback</button>
-      </div>
-
-      {!hasCapXp && used <= cap ? (
-        <button className="full-button" type="button" onClick={onAwardDailyCap}>
-          Stayed under plan +{xpAmounts.stayed_under_cap} XP
-        </button>
-      ) : null}
-
-      <div className="section">
-        <h2>Check in</h2>
-        <div className="rating-grid">
-          <Rating label="Mood" value={checkin?.mood ?? null} onChange={(value) => onCheckin('mood', value)} />
-          <Rating label="Energy" value={checkin?.energy ?? null} onChange={(value) => onCheckin('energy', value)} />
-          <Rating label="Sleep" value={checkin?.sleep_quality ?? null} onChange={(value) => onCheckin('sleep_quality', value)} />
-        </div>
-      </div>
-
       <div className="section">
         <h2>Recent today</h2>
         {recentLogs.length === 0 ? (
-          <p className="empty">Nothing logged yet. Start with one quick tap.</p>
+          <p className="empty">Nothing logged yet. Use the Log tab when something happens.</p>
         ) : (
           <ul className="plain-list">
             {recentLogs.map((log) => <li key={log.id}>{log.text}</li>)}
@@ -110,20 +72,5 @@ export function TodayTab({
         )}
       </div>
     </section>
-  );
-}
-
-function Rating({ label, value, onChange }: { label: string; value: number | null; onChange: (value: number) => void }) {
-  return (
-    <div className="rating">
-      <span>{label}</span>
-      <div>
-        {[1, 2, 3, 4, 5].map((item) => (
-          <button className={value === item ? 'selected' : ''} key={item} type="button" onClick={() => onChange(item)}>
-            {item}
-          </button>
-        ))}
-      </div>
-    </div>
   );
 }

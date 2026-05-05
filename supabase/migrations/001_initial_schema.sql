@@ -10,6 +10,10 @@ create table if not exists daily_settings (
   user_id uuid not null references profiles(id) on delete cascade,
   caffeine_cap numeric not null default 3,
   cost_per_shot numeric,
+  taper_start_day date,
+  taper_end_day date,
+  taper_start_cap numeric,
+  taper_end_cap numeric,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   unique (user_id)

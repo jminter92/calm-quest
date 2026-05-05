@@ -5,6 +5,7 @@ Calm Quest is a very small mobile-first React PWA for tracking caffeine reductio
 ## What It Does
 
 - Tracks daily caffeine shots, triggers, outcomes, notes, and daily cap.
+- Supports a simple taper period with start cap, target cap, and dates.
 - Shows today’s shots vs cap, streak under cap, recent triggers, and 7/30 day progress.
 - Awards simple XP for honest logging, resisting triggers, and staying under plan.
 - Supports Android Add to Home Screen with a PWA manifest, service worker, and PNG icons.
@@ -45,8 +46,9 @@ Without Supabase values, the app still runs in demo mode and saves data in the b
 1. Create a free Supabase project.
 2. Open the SQL editor.
 3. Run `supabase/migrations/001_initial_schema.sql`.
-4. In Supabase Auth settings, enable Email provider.
-5. Add your local and deployed URLs to Auth redirect URLs:
+4. If this project already existed before taper settings were added, also run `supabase/migrations/002_add_taper_settings.sql`.
+5. In Supabase Auth settings, enable Email provider.
+6. Add your local and deployed URLs to Auth redirect URLs:
    - `http://localhost:5173`
    - your Netlify site URL after deploy
 

@@ -31,6 +31,10 @@ export function defaultData(userId = demoUserId): CalmQuestData {
       user_id: userId,
       caffeine_cap: 3,
       cost_per_shot: null,
+      taper_start_day: null,
+      taper_end_day: null,
+      taper_start_cap: null,
+      taper_end_cap: null,
       created_at: now,
       updated_at: now
     },

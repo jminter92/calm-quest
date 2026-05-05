@@ -1,7 +1,6 @@
 import { type ReactElement, useEffect, useState } from 'react';
 import { BottomNav } from './components/BottomNav';
-import { InstallPrompt } from './components/InstallPrompt';
-import { addCaffeineLog, addTriggerLog, addXpEvents, demoUser, importJson, loadData, resetLocalData, saveCheckin, saveSettings } from './lib/storage';
+import { addCaffeineLog, addTriggerLog, addXpEvents, demoUser, loadData, resetLocalData, saveSettings } from './lib/storage';
 import { hasSupabaseConfig, supabase } from './lib/supabase';
 import { dateWithTime, timeValue, toDayKey } from './lib/dates';
 import { xpAmounts, xpForTriggerOutcome } from './lib/xp';
@@ -56,7 +55,7 @@ export default function App() {
       .then((nextData) => {
         if (!mounted) return;
         setData(nextData);
-        setMessage(user.mode === 'demo' ? 'Demo mode: saved on this device.' : 'Signed in and synced.');
+        setMessage(user.mode === 'demo' ? 'Demo mode' : 'Synced');
       })
       .catch((error: Error) => setMessage(error.message));
 
@@ -119,19 +118,7 @@ export default function App() {
 
   const screen = {
     today: (
-      <TodayTab
-        user={user}
-        data={data}
-        onQuickCaffeine={() => {
-          setActiveTab('log');
-          logCaffeine({ logged_at: dateWithTime(toDayKey(), timeValue()), shots: 1, drink_type: 'coffee', note: null, trigger_label: null });
-        }}
-        onQuickTrigger={() => setActiveTab('log')}
-        onQuickWin={() => quickTrigger('resisted', 'Quick win')}
-        onQuickSetback={() => quickTrigger('had_caffeine', 'Went over plan')}
-        onCheckin={(field, value) => run(() => saveCheckin(user, requireData(), { day: toDayKey(), [field]: value }), 'Check-in saved.')}
-        onAwardDailyCap={awardDailyCap}
-      />
+      <TodayTab data={data} />
     ),
     log: (
       <LogTab
@@ -150,7 +137,6 @@ export default function App() {
         data={data}
         supabaseReady={hasSupabaseConfig}
         onSettings={(patch) => run(() => saveSettings(user, requireData(), patch), 'Settings saved.')}
-        onImport={(json) => run(async () => importJson(json), 'Data imported into demo storage.')}
         onReset={() => run(async () => resetLocalData(), 'Demo data reset.')}
         onSignIn={(email) =>
           run(async () => {
@@ -175,11 +161,7 @@ export default function App() {
 
   return (
     <main className="app-shell">
-      <InstallPrompt />
-      <div className="status-row">
-        <p className="status">{message}</p>
-        {busy ? <span>Saving...</span> : null}
-      </div>
+      {busy ? <div className="status-row"><span>Saving...</span></div> : null}
       {screen[activeTab]}
       <BottomNav active={activeTab} onChange={setActiveTab} />
     </main>

@@ -97,6 +97,11 @@ h2 {
   padding-top: 0.4rem;
 }
 
+.centered-heading {
+  justify-content: center;
+  text-align: center;
+}
+
 .hero p,
 .screen-heading p,
 .status,
