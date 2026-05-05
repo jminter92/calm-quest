@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { dateWithTime, timeValue, toDayKey } from '../lib/dates';
-import type { DrinkType, TriggerLabel, TriggerOutcome } from '../types';
+import type { DrinkType, TriggerLabel } from '../types';
 
 const drinkTypes: DrinkType[] = ['coffee', 'tea', 'energy drink', 'cola', 'decaf', 'other'];
 const triggers: TriggerLabel[] = [
@@ -10,6 +10,7 @@ const triggers: TriggerLabel[] = [
   'social cafe',
   'afternoon slump',
   'early morning fog',
+  'tired',
   'long drive',
   'low mood',
   'autopilot',
@@ -18,24 +19,18 @@ const triggers: TriggerLabel[] = [
 
 interface LogTabProps {
   onCaffeine: (input: { logged_at: string; shots: number; drink_type: DrinkType; note: string | null; trigger_label: TriggerLabel | null }) => void;
-  onTrigger: (input: { logged_at: string; trigger_label: TriggerLabel; craving_intensity: number; outcome: TriggerOutcome; note: string | null }) => void;
   onQuickWin: () => void;
   onQuickDecaf: () => void;
   onQuickUnderPlan: () => void;
   onQuickSetback: () => void;
 }
 
-export function LogTab({ onCaffeine, onTrigger, onQuickWin, onQuickDecaf, onQuickUnderPlan, onQuickSetback }: LogTabProps) {
+export function LogTab({ onCaffeine, onQuickWin, onQuickDecaf, onQuickUnderPlan, onQuickSetback }: LogTabProps) {
   const [caffeineTime, setCaffeineTime] = useState(timeValue());
   const [shots, setShots] = useState(1);
   const [drinkType, setDrinkType] = useState<DrinkType>('coffee');
   const [caffeineNote, setCaffeineNote] = useState('');
   const [linkedTrigger, setLinkedTrigger] = useState<TriggerLabel | ''>('');
-  const [triggerTime, setTriggerTime] = useState(timeValue());
-  const [triggerLabel, setTriggerLabel] = useState<TriggerLabel>('stressful work');
-  const [intensity, setIntensity] = useState(3);
-  const [outcome, setOutcome] = useState<TriggerOutcome>('resisted');
-  const [triggerNote, setTriggerNote] = useState('');
 
   function submitCaffeine(event: FormEvent) {
     event.preventDefault();
@@ -47,18 +42,6 @@ export function LogTab({ onCaffeine, onTrigger, onQuickWin, onQuickDecaf, onQuic
       trigger_label: linkedTrigger || null
     });
     setCaffeineNote('');
-  }
-
-  function submitTrigger(event: FormEvent) {
-    event.preventDefault();
-    onTrigger({
-      logged_at: dateWithTime(toDayKey(), triggerTime),
-      trigger_label: triggerLabel,
-      craving_intensity: intensity,
-      outcome,
-      note: triggerNote.trim() || null
-    });
-    setTriggerNote('');
   }
 
   return (
@@ -83,24 +66,6 @@ export function LogTab({ onCaffeine, onTrigger, onQuickWin, onQuickDecaf, onQuic
         </select></label>
         <label>Note<textarea value={caffeineNote} onChange={(event) => setCaffeineNote(event.target.value)} placeholder="Optional" /></label>
         <button type="submit">Save caffeine</button>
-      </form>
-
-      <form className="form-card" onSubmit={submitTrigger}>
-        <h2>Log trigger</h2>
-        <label>Time<input type="time" value={triggerTime} onChange={(event) => setTriggerTime(event.target.value)} /></label>
-        <label>Trigger<select value={triggerLabel} onChange={(event) => setTriggerLabel(event.target.value as TriggerLabel)}>
-          {triggers.map((trigger) => <option key={trigger}>{trigger}</option>)}
-        </select></label>
-        <label>Intensity<select value={intensity} onChange={(event) => setIntensity(Number(event.target.value))}>
-          {[1, 2, 3, 4, 5].map((value) => <option key={value} value={value}>{value}</option>)}
-        </select></label>
-        <label>Outcome<select value={outcome} onChange={(event) => setOutcome(event.target.value as TriggerOutcome)}>
-          <option value="resisted">resisted</option>
-          <option value="partial_win">partial win</option>
-          <option value="had_caffeine">had caffeine</option>
-        </select></label>
-        <label>Note<textarea value={triggerNote} onChange={(event) => setTriggerNote(event.target.value)} placeholder="Optional" /></label>
-        <button type="submit">Save trigger</button>
       </form>
 
       <div className="section">

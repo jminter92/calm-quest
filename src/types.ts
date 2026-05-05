@@ -9,6 +9,7 @@ export type TriggerLabel =
   | 'social cafe'
   | 'afternoon slump'
   | 'early morning fog'
+  | 'tired'
   | 'long drive'
   | 'low mood'
   | 'autopilot'

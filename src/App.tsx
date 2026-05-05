@@ -123,7 +123,6 @@ export default function App() {
     log: (
       <LogTab
         onCaffeine={logCaffeine}
-        onTrigger={logTrigger}
         onQuickWin={() => quickTrigger('resisted', 'Resisted craving')}
         onQuickDecaf={() => logCaffeine({ logged_at: dateWithTime(toDayKey(), timeValue()), shots: 0.5, drink_type: 'decaf', note: 'Chose decaf', trigger_label: null })}
         onQuickUnderPlan={awardDailyCap}
