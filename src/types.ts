@@ -36,6 +36,10 @@ export interface DailySettings {
   user_id: string;
   caffeine_cap: number;
   cost_per_shot: number | null;
+  taper_start_day: string | null;
+  taper_end_day: string | null;
+  taper_start_cap: number | null;
+  taper_end_cap: number | null;
   created_at: string;
   updated_at: string;
 }
