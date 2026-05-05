@@ -13,7 +13,7 @@ export const xpAmounts: Record<XpEventType, number> = {
   log_trigger: 1,
   resisted_craving: 5,
   partial_win: 3,
-  stayed_under_cap: 5,
+  stayed_under_cap: 3,
   three_day_streak: 10,
   seven_day_streak: 20,
   setback: 0

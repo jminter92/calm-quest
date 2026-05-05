@@ -160,6 +160,22 @@ h2 {
   padding: 1rem;
 }
 
+.daily-xp-panel {
+  align-items: center;
+}
+
+.daily-xp-panel button {
+  width: 100%;
+}
+
+.xp-status {
+  color: #256f8f;
+}
+
+.xp-status.over {
+  color: #a65f3c;
+}
+
 .cap-row {
   display: flex;
   align-items: center;

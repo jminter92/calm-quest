@@ -1,15 +1,15 @@
 import { type ReactElement, useEffect, useState } from 'react';
 import { BottomNav } from './components/BottomNav';
-import { addCaffeineLog, addTriggerLog, addXpEvents, demoUser, loadData, resetLocalData, saveSettings } from './lib/storage';
+import { addCaffeineLog, addXpEvents, demoUser, loadData, resetLocalData, saveSettings } from './lib/storage';
 import { hasSupabaseConfig, supabase } from './lib/supabase';
-import { dateWithTime, timeValue, toDayKey } from './lib/dates';
-import { xpAmounts, xpForTriggerOutcome } from './lib/xp';
+import { toDayKey } from './lib/dates';
+import { xpAmounts } from './lib/xp';
 import { LogTab } from './tabs/LogTab';
 import { MotivationTab } from './tabs/MotivationTab';
 import { ProgressTab } from './tabs/ProgressTab';
 import { SettingsTab } from './tabs/SettingsTab';
 import { TodayTab } from './tabs/TodayTab';
-import type { AppUser, CalmQuestData, DrinkType, TabKey, TriggerLabel, TriggerOutcome } from './types';
+import type { AppUser, CalmQuestData, DrinkType, TabKey, TriggerLabel } from './types';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('today');
@@ -91,20 +91,6 @@ export default function App() {
     run(() => addCaffeineLog(user, requireData(), input), 'Caffeine logged. Honest data counts.');
   }
 
-  function logTrigger(input: { logged_at: string; trigger_label: TriggerLabel; craving_intensity: number; outcome: TriggerOutcome; note: string | null }) {
-    run(() => addTriggerLog(user, requireData(), input, xpForTriggerOutcome(input.outcome)), 'Trigger logged.');
-  }
-
-  function quickTrigger(outcome: TriggerOutcome, note: string) {
-    logTrigger({
-      logged_at: dateWithTime(toDayKey(), timeValue()),
-      trigger_label: 'autopilot',
-      craving_intensity: outcome === 'had_caffeine' ? 4 : 3,
-      outcome,
-      note
-    });
-  }
-
   function awardDailyCap() {
     const today = toDayKey();
     const current = requireData();
@@ -119,15 +105,11 @@ export default function App() {
 
   const screen = {
     today: (
-      <TodayTab data={data} />
+      <TodayTab data={data} onAwardDailyCap={awardDailyCap} />
     ),
     log: (
       <LogTab
         onCaffeine={logCaffeine}
-        onQuickWin={() => quickTrigger('resisted', 'Resisted craving')}
-        onQuickDecaf={() => logCaffeine({ logged_at: dateWithTime(toDayKey(), timeValue()), shots: 0.5, drink_type: 'decaf', note: 'Chose decaf', trigger_label: null })}
-        onQuickUnderPlan={awardDailyCap}
-        onQuickSetback={() => quickTrigger('had_caffeine', 'Went over plan')}
       />
     ),
     progress: <ProgressTab data={data} />,

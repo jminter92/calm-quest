@@ -26,13 +26,9 @@ const timeShortcuts = [
 
 interface LogTabProps {
   onCaffeine: (input: { logged_at: string; shots: number; drink_type: DrinkType; note: string | null; trigger_label: TriggerLabel | null }) => void;
-  onQuickWin: () => void;
-  onQuickDecaf: () => void;
-  onQuickUnderPlan: () => void;
-  onQuickSetback: () => void;
 }
 
-export function LogTab({ onCaffeine, onQuickWin, onQuickDecaf, onQuickUnderPlan, onQuickSetback }: LogTabProps) {
+export function LogTab({ onCaffeine }: LogTabProps) {
   const [caffeineDay, setCaffeineDay] = useState(toDayKey());
   const [caffeineTime, setCaffeineTime] = useState(timeValue());
   const [shots, setShots] = useState(1);
@@ -88,15 +84,6 @@ export function LogTab({ onCaffeine, onQuickWin, onQuickDecaf, onQuickUnderPlan,
         <button type="submit">Save caffeine</button>
       </form>
 
-      <div className="section">
-        <h2>One tap</h2>
-        <div className="quick-grid">
-          <button type="button" onClick={onQuickWin}>Resisted craving</button>
-          <button type="button" onClick={onQuickDecaf}>Chose decaf</button>
-          <button type="button" onClick={onQuickUnderPlan}>Stayed under plan</button>
-          <button type="button" onClick={onQuickSetback}>Went over plan</button>
-        </div>
-      </div>
     </section>
   );
 }

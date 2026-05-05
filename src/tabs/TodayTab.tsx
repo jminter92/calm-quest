@@ -1,14 +1,15 @@
 import { MetricCard } from '../components/MetricCard';
 import { prettyDate, toDayKey } from '../lib/dates';
 import { activeDayKeys, capForDay, shotsForDay, streakUnderCap, totalXp } from '../lib/progress';
-import { titleForXp } from '../lib/xp';
+import { titleForXp, xpAmounts } from '../lib/xp';
 import type { CalmQuestData } from '../types';
 
 interface TodayTabProps {
   data: CalmQuestData;
+  onAwardDailyCap: () => void;
 }
 
-export function TodayTab({ data }: TodayTabProps) {
+export function TodayTab({ data, onAwardDailyCap }: TodayTabProps) {
   const today = toDayKey();
   const cap = capForDay(data.settings, today);
   const used = shotsForDay(data.caffeineLogs, today);
@@ -18,6 +19,8 @@ export function TodayTab({ data }: TodayTabProps) {
   const streak = streakUnderCap(data.caffeineLogs, cap, activeDays);
   const xp = totalXp(data.xpEvents);
   const title = titleForXp(xp);
+  const hasDailyTargetXp = data.xpEvents.some((event) => event.related_date === today && event.event_type === 'stayed_under_cap');
+  const isAtOrBelowTarget = used <= cap;
 
   return (
     <section className="screen">
@@ -49,6 +52,20 @@ export function TodayTab({ data }: TodayTabProps) {
         <MetricCard label="Daily cap" value={cap} detail="shots" />
         <MetricCard label="Streak" value={streak} detail="days under cap" />
         <MetricCard label="XP" value={xp} detail="total earned" />
+      </div>
+
+      <div className="cap-panel daily-xp-panel">
+        <div>
+          <h2>Today’s XP</h2>
+          <p className="empty">Stay at or below target: +{xpAmounts.stayed_under_cap} XP</p>
+        </div>
+        {hasDailyTargetXp ? (
+          <strong className="xp-status">Claimed today</strong>
+        ) : isAtOrBelowTarget ? (
+          <button type="button" onClick={onAwardDailyCap}>Claim +{xpAmounts.stayed_under_cap} XP</button>
+        ) : (
+          <strong className="xp-status over">Not available today</strong>
+        )}
       </div>
     </section>
   );
