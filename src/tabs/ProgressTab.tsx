@@ -1,6 +1,6 @@
 import { MetricCard } from '../components/MetricCard';
 import { ProgressBars } from '../components/ProgressBars';
-import { averageShots, commonTriggers, countOutcomes, milestoneStatus, shotsByDay, streakUnderCap, totalXp } from '../lib/progress';
+import { activeDayKeys, averageShots, capForDay, commonTriggers, countOutcomes, milestoneStatus, shotsByDay, streakUnderCap, totalXp } from '../lib/progress';
 import { recentDayKeys } from '../lib/dates';
 import { titleForXp } from '../lib/xp';
 import type { CalmQuestData } from '../types';
@@ -10,9 +10,10 @@ interface ProgressTabProps {
 }
 
 export function ProgressTab({ data }: ProgressTabProps) {
-  const cap = Number(data.settings.caffeine_cap);
+  const cap = capForDay(data.settings);
   const xp = totalXp(data.xpEvents);
   const title = titleForXp(xp);
+  const activeDays = activeDayKeys(data.caffeineLogs, data.triggerLogs, data.checkins, data.xpEvents);
   const sevenDays = shotsByDay(data.caffeineLogs, recentDayKeys(7));
   const thirtyDays = shotsByDay(data.caffeineLogs, recentDayKeys(30));
   const outcomes = countOutcomes(data.triggerLogs);
@@ -20,15 +21,14 @@ export function ProgressTab({ data }: ProgressTabProps) {
 
   return (
     <section className="screen">
-      <div className="screen-heading">
-        <p>Simple signals</p>
+      <div className="screen-heading centered-heading">
         <h1>Progress</h1>
       </div>
 
       <div className="metric-grid">
         <MetricCard label="Week avg" value={averageShots(data.caffeineLogs, 7)} detail="shots/day" />
         <MetricCard label="Month avg" value={averageShots(data.caffeineLogs, 30)} detail="shots/day" />
-        <MetricCard label="Streak" value={streakUnderCap(data.caffeineLogs, cap)} detail="days under cap" />
+        <MetricCard label="Streak" value={streakUnderCap(data.caffeineLogs, cap, activeDays)} detail="days under cap" />
         <MetricCard label="XP" value={xp} detail={title} />
       </div>
 
@@ -66,7 +66,7 @@ export function ProgressTab({ data }: ProgressTabProps) {
       <div className="section">
         <h2>Milestones</h2>
         <ul className="milestone-list">
-          {milestoneStatus(data.caffeineLogs, cap).map((milestone) => (
+          {milestoneStatus(data.caffeineLogs, cap, activeDays).map((milestone) => (
             <li className={milestone.done ? 'done' : ''} key={milestone.label}>
               <span>{milestone.done ? 'Done' : 'Open'}</span>
               {milestone.label}
