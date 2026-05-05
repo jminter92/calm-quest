@@ -78,9 +78,12 @@ export function streakUnderCap(logs: CaffeineLog[], cap: number, activeDays?: Se
   return streak;
 }
 
-export function commonTriggers(logs: TriggerLog[], limit = 5): Array<{ label: string; count: number }> {
+export function commonCaffeineTriggers(logs: CaffeineLog[], limit = 5): Array<{ label: string; count: number }> {
   const counts = new Map<string, number>();
-  logs.forEach((log) => counts.set(log.trigger_label, (counts.get(log.trigger_label) ?? 0) + 1));
+  logs.forEach((log) => {
+    if (!log.trigger_label) return;
+    counts.set(log.trigger_label, (counts.get(log.trigger_label) ?? 0) + 1);
+  });
 
   return [...counts.entries()]
     .sort((a, b) => b[1] - a[1])

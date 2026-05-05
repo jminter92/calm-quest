@@ -5,6 +5,7 @@ import { hasSupabaseConfig, supabase } from './lib/supabase';
 import { dateWithTime, timeValue, toDayKey } from './lib/dates';
 import { xpAmounts, xpForTriggerOutcome } from './lib/xp';
 import { LogTab } from './tabs/LogTab';
+import { MotivationTab } from './tabs/MotivationTab';
 import { ProgressTab } from './tabs/ProgressTab';
 import { SettingsTab } from './tabs/SettingsTab';
 import { TodayTab } from './tabs/TodayTab';
@@ -130,6 +131,7 @@ export default function App() {
       />
     ),
     progress: <ProgressTab data={data} />,
+    motivation: <MotivationTab />,
     settings: (
       <SettingsTab
         user={user}

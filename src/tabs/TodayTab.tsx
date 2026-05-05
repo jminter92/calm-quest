@@ -18,16 +18,6 @@ export function TodayTab({ data }: TodayTabProps) {
   const streak = streakUnderCap(data.caffeineLogs, cap, activeDays);
   const xp = totalXp(data.xpEvents);
   const title = titleForXp(xp);
-  const recentLogs = [
-    ...data.caffeineLogs.filter((log) => toDayKey(new Date(log.logged_at)) === today).map((log) => ({
-      id: log.id,
-      text: `${log.shots} shot ${log.drink_type}`
-    })),
-    ...data.triggerLogs.filter((log) => toDayKey(new Date(log.logged_at)) === today).map((log) => ({
-      id: log.id,
-      text: `${log.trigger_label}: ${log.outcome.replace('_', ' ')}`
-    }))
-  ].slice(0, 5);
 
   return (
     <section className="screen">
@@ -59,17 +49,6 @@ export function TodayTab({ data }: TodayTabProps) {
         <MetricCard label="Daily cap" value={cap} detail="shots" />
         <MetricCard label="Streak" value={streak} detail="days under cap" />
         <MetricCard label="XP" value={xp} detail="total earned" />
-      </div>
-
-      <div className="section">
-        <h2>Recent today</h2>
-        {recentLogs.length === 0 ? (
-          <p className="empty">Nothing logged yet. Use the Log tab when something happens.</p>
-        ) : (
-          <ul className="plain-list">
-            {recentLogs.map((log) => <li key={log.id}>{log.text}</li>)}
-          </ul>
-        )}
       </div>
     </section>
   );

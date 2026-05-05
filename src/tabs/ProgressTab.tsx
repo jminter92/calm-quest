@@ -1,8 +1,8 @@
 import { MetricCard } from '../components/MetricCard';
 import { ProgressBars } from '../components/ProgressBars';
-import { activeDayKeys, averageShots, capForDay, commonTriggers, countOutcomes, milestoneStatus, shotsByDay, streakUnderCap, totalXp } from '../lib/progress';
+import { activeDayKeys, averageShots, capForDay, commonCaffeineTriggers, countOutcomes, milestoneStatus, shotsByDay, streakUnderCap, totalXp } from '../lib/progress';
 import { recentDayKeys } from '../lib/dates';
-import { titleForXp } from '../lib/xp';
+import { titleForXp, titleThresholds } from '../lib/xp';
 import type { CalmQuestData } from '../types';
 
 interface ProgressTabProps {
@@ -17,7 +17,8 @@ export function ProgressTab({ data }: ProgressTabProps) {
   const sevenDays = shotsByDay(data.caffeineLogs, recentDayKeys(7));
   const thirtyDays = shotsByDay(data.caffeineLogs, recentDayKeys(30));
   const outcomes = countOutcomes(data.triggerLogs);
-  const triggers = commonTriggers(data.triggerLogs);
+  const triggers = commonCaffeineTriggers(data.caffeineLogs);
+  const levels = [...titleThresholds].reverse();
 
   return (
     <section className="screen">
@@ -48,9 +49,9 @@ export function ProgressTab({ data }: ProgressTabProps) {
       </div>
 
       <div className="section">
-        <h2>Common triggers</h2>
+        <h2>Caffeine triggers</h2>
         {triggers.length === 0 ? (
-          <p className="empty">Triggers will appear here as you log them.</p>
+          <p className="empty">Trigger links from caffeine logs will appear here.</p>
         ) : (
           <ul className="plain-list">
             {triggers.map((trigger) => (
@@ -61,6 +62,18 @@ export function ProgressTab({ data }: ProgressTabProps) {
             ))}
           </ul>
         )}
+      </div>
+
+      <div className="section">
+        <h2>Levels</h2>
+        <ul className="level-list">
+          {levels.map((level) => (
+            <li className={xp >= level.xp ? 'unlocked' : ''} key={level.title}>
+              <span>{xp >= level.xp ? 'Unlocked' : `${level.xp} XP`}</span>
+              <strong>{level.title}</strong>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="section">

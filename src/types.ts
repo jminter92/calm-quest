@@ -1,18 +1,17 @@
-export type TabKey = 'today' | 'log' | 'progress' | 'settings';
+export type TabKey = 'today' | 'log' | 'progress' | 'motivation' | 'settings';
 
 export type DrinkType = 'coffee' | 'tea' | 'energy drink' | 'cola' | 'decaf' | 'other';
 
 export type TriggerLabel =
-  | 'poor sleep'
-  | 'stressful work'
-  | 'boredom'
-  | 'social cafe'
   | 'afternoon slump'
-  | 'early morning fog'
-  | 'tired'
-  | 'long drive'
-  | 'low mood'
   | 'autopilot'
+  | 'boredom'
+  | 'early morning fog'
+  | 'low mood'
+  | 'poor sleep'
+  | 'social cafe'
+  | 'stressful work'
+  | 'tired'
   | 'other';
 
 export type TriggerOutcome = 'resisted' | 'partial_win' | 'had_caffeine';

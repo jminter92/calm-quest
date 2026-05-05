@@ -1,6 +1,6 @@
 :root {
-  color: #26231f;
-  background: #f8f4ee;
+  color: #1f2933;
+  background: #eef7fb;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   line-height: 1.45;
@@ -16,8 +16,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background:
-    linear-gradient(180deg, rgba(244, 239, 231, 0.92), rgba(235, 242, 234, 0.86)),
-    #f8f4ee;
+    linear-gradient(180deg, rgba(238, 247, 251, 0.96), rgba(246, 250, 252, 0.9)),
+    #eef7fb;
 }
 
 button,
@@ -31,7 +31,7 @@ button {
   min-height: 48px;
   border: 0;
   border-radius: 8px;
-  background: #2f5d50;
+  background: #256f8f;
   color: #ffffff;
   font-weight: 700;
   cursor: pointer;
@@ -47,10 +47,10 @@ select,
 textarea {
   width: 100%;
   min-height: 46px;
-  border: 1px solid #d6cec2;
+  border: 1px solid #c9dce7;
   border-radius: 8px;
-  background: #fffdf9;
-  color: #26231f;
+  background: #fbfdff;
+  color: #1f2933;
   padding: 0.72rem 0.8rem;
 }
 
@@ -107,17 +107,17 @@ h2 {
 .status,
 .empty,
 .cap-row.subtle {
-  color: #71685e;
+  color: #61717c;
   font-size: 0.92rem;
 }
 
 .title-pill {
   flex: 0 0 auto;
   max-width: 42%;
-  border: 1px solid #d6cec2;
+  border: 1px solid #c9dce7;
   border-radius: 999px;
-  background: #fffdf9;
-  color: #2f5d50;
+  background: #fbfdff;
+  color: #256f8f;
   padding: 0.45rem 0.7rem;
   font-size: 0.78rem;
   font-weight: 800;
@@ -140,7 +140,7 @@ h2 {
 }
 
 .status-row span {
-  color: #2f5d50;
+  color: #256f8f;
   font-size: 0.84rem;
   font-weight: 800;
 }
@@ -148,10 +148,10 @@ h2 {
 .cap-panel,
 .form-card,
 .metric-card {
-  border: 1px solid #ded6ca;
+  border: 1px solid #d2e2ea;
   border-radius: 8px;
-  background: rgba(255, 253, 249, 0.92);
-  box-shadow: 0 10px 30px rgba(75, 65, 52, 0.07);
+  background: rgba(251, 253, 255, 0.94);
+  box-shadow: 0 10px 30px rgba(31, 73, 92, 0.08);
 }
 
 .cap-panel {
@@ -171,13 +171,13 @@ h2 {
   height: 12px;
   overflow: hidden;
   border-radius: 999px;
-  background: #e8e0d4;
+  background: #dcecf3;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: #2f5d50;
+  background: #256f8f;
   transition: width 180ms ease;
 }
 
@@ -201,7 +201,7 @@ h2 {
 
 .metric-card span,
 label {
-  color: #71685e;
+  color: #61717c;
   font-size: 0.86rem;
   font-weight: 700;
 }
@@ -212,7 +212,7 @@ label {
 }
 
 .metric-card small {
-  color: #71685e;
+  color: #61717c;
 }
 
 .quick-grid {
@@ -223,7 +223,7 @@ label {
 
 .quick-grid button,
 .full-button {
-  background: #2f5d50;
+  background: #256f8f;
 }
 
 .full-button {
@@ -246,7 +246,7 @@ label {
 }
 
 .rating span {
-  color: #71685e;
+  color: #61717c;
   font-weight: 800;
 }
 
@@ -258,17 +258,18 @@ label {
 
 .rating button {
   min-height: 42px;
-  background: #e6ded1;
-  color: #352f29;
+  background: #dcecf3;
+  color: #1f2933;
 }
 
 .rating button.selected {
-  background: #2f5d50;
+  background: #256f8f;
   color: white;
 }
 
 .plain-list,
-.milestone-list {
+.milestone-list,
+.level-list {
   display: grid;
   gap: 0.5rem;
   margin: 0;
@@ -277,15 +278,17 @@ label {
 }
 
 .plain-list li,
-.milestone-list li {
+.milestone-list li,
+.level-list li,
+.quote-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
   min-height: 46px;
-  border: 1px solid #ded6ca;
+  border: 1px solid #d2e2ea;
   border-radius: 8px;
-  background: rgba(255, 253, 249, 0.75);
+  background: rgba(251, 253, 255, 0.82);
   padding: 0.7rem 0.8rem;
 }
 
@@ -293,20 +296,22 @@ label {
   justify-content: flex-start;
 }
 
-.milestone-list span {
+.milestone-list span,
+.level-list span {
   min-width: 48px;
   border-radius: 999px;
-  background: #e8e0d4;
-  color: #71685e;
+  background: #dcecf3;
+  color: #61717c;
   padding: 0.25rem 0.45rem;
   font-size: 0.75rem;
   font-weight: 800;
   text-align: center;
 }
 
-.milestone-list .done span {
-  background: #d8ead9;
-  color: #2f5d50;
+.milestone-list .done span,
+.level-list .unlocked span {
+  background: #d4edf8;
+  color: #256f8f;
 }
 
 .form-card {
@@ -321,8 +326,48 @@ label {
 }
 
 .form-card .secondary {
-  background: #e6ded1;
-  color: #352f29;
+  background: #dcecf3;
+  color: #1f2933;
+}
+
+.chip-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.chip {
+  min-height: 40px;
+  border: 1px solid #c9dce7;
+  background: #edf6fa;
+  color: #375466;
+  font-size: 0.78rem;
+}
+
+.chip.selected {
+  background: #256f8f;
+  color: #fff;
+}
+
+.level-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  justify-content: flex-start;
+}
+
+.quote-stack {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.quote-card {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+}
+
+.quote-card p {
+  color: #61717c;
 }
 
 .bars {
@@ -331,9 +376,9 @@ label {
   align-items: end;
   gap: 0.4rem;
   min-height: 150px;
-  border: 1px solid #ded6ca;
+  border: 1px solid #d2e2ea;
   border-radius: 8px;
-  background: rgba(255, 253, 249, 0.75);
+  background: rgba(251, 253, 255, 0.82);
   padding: 0.75rem;
 }
 
@@ -360,18 +405,18 @@ label {
   min-height: 76px;
   overflow: hidden;
   border-radius: 999px 999px 6px 6px;
-  background: #e8e0d4;
+  background: #dcecf3;
 }
 
 .bar-fill {
   width: 100%;
   border-radius: inherit;
-  background: #2f5d50;
+  background: #256f8f;
 }
 
 .bar-item small {
   overflow: hidden;
-  color: #71685e;
+  color: #61717c;
   font-size: 0.7rem;
   text-overflow: clip;
 }
@@ -382,12 +427,12 @@ label {
   bottom: 0;
   left: 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.35rem;
   width: min(100%, 480px);
   margin: 0 auto;
-  border-top: 1px solid #ded6ca;
-  background: rgba(255, 253, 249, 0.96);
+  border-top: 1px solid #d2e2ea;
+  background: rgba(251, 253, 255, 0.96);
   padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom));
   backdrop-filter: blur(12px);
 }
@@ -398,7 +443,7 @@ label {
   gap: 0.15rem;
   min-height: 56px;
   background: transparent;
-  color: #71685e;
+  color: #61717c;
   font-size: 0.72rem;
   font-weight: 800;
 }
@@ -409,17 +454,17 @@ label {
   width: 1.45rem;
   height: 1.45rem;
   border-radius: 999px;
-  background: #eee7dc;
-  color: #352f29;
+  background: #e5f1f6;
+  color: #375466;
   font-size: 0.9rem;
 }
 
 .nav-item.active {
-  color: #2f5d50;
+  color: #256f8f;
 }
 
 .nav-item.active span:first-child {
-  background: #2f5d50;
+  background: #256f8f;
   color: #fff;
 }
 
