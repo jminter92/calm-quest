@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { dateWithTime, timeValue, toDayKey } from '../lib/dates';
-import type { CalmQuestData, DrinkType, TriggerLabel } from '../types';
+import { xpAmounts } from '../lib/xp';
+import type { CalmQuestData, DrinkType, TriggerLabel, XpEventType } from '../types';
 
 const drinkTypes: DrinkType[] = ['coffee', 'tea', 'energy drink', 'cola', 'decaf', 'other'];
 const triggers: TriggerLabel[] = [
@@ -27,9 +28,16 @@ const timeShortcuts = [
 interface LogTabProps {
   data: CalmQuestData;
   onCaffeine: (input: { logged_at: string; shots: number; drink_type: DrinkType; note: string | null; trigger_label: TriggerLabel | null }) => void;
+  onBonusXp: (eventType: XpEventType, amount: number) => void;
 }
 
-export function LogTab({ data, onCaffeine }: LogTabProps) {
+const decafBonuses: Array<{ type: XpEventType; label: string }> = [
+  { type: 'decaf_at_cafe', label: 'Decaf at cafe' },
+  { type: 'decaf_when_tired', label: 'Decaf when tired' },
+  { type: 'decaf_with_people', label: 'Decaf with family/friends' }
+];
+
+export function LogTab({ data, onCaffeine, onBonusXp }: LogTabProps) {
   const [caffeineDay, setCaffeineDay] = useState(toDayKey());
   const [caffeineTime, setCaffeineTime] = useState(timeValue());
   const [shots, setShots] = useState(1);
@@ -37,6 +45,7 @@ export function LogTab({ data, onCaffeine }: LogTabProps) {
   const [caffeineNote, setCaffeineNote] = useState('');
   const [linkedTrigger, setLinkedTrigger] = useState<TriggerLabel | ''>('');
   const [savedNotice, setSavedNotice] = useState('');
+  const today = toDayKey();
   const recentLogs = data.caffeineLogs.slice(0, 5);
 
   function submitCaffeine(event: FormEvent) {
@@ -89,6 +98,27 @@ export function LogTab({ data, onCaffeine }: LogTabProps) {
         <button type="submit">Save caffeine</button>
         {savedNotice ? <p className="save-notice">{savedNotice} Recent entries will update below.</p> : null}
       </form>
+
+      <div className="section">
+        <h2>Decaf bonuses</h2>
+        <div className="bonus-grid">
+          {decafBonuses.map((bonus) => {
+            const claimed = data.xpEvents.some((event) => event.related_date === today && event.event_type === bonus.type);
+
+            return (
+              <button
+                className={claimed ? 'bonus-button claimed' : 'bonus-button'}
+                disabled={claimed}
+                key={bonus.type}
+                type="button"
+                onClick={() => onBonusXp(bonus.type, xpAmounts[bonus.type])}
+              >
+                {claimed ? 'Claimed' : `${bonus.label} +1 XP`}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       <div className="section">
         <h2>Recent entries</h2>

@@ -198,6 +198,10 @@ h2 {
   color: #a65f3c;
 }
 
+.penalty-button {
+  background: #a65f3c;
+}
+
 .target-override-panel {
   gap: 0.85rem;
 }
@@ -553,6 +557,20 @@ label {
   color: #256f8f;
   padding: 0.75rem;
   font-weight: 800;
+}
+
+.bonus-grid {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.bonus-button {
+  background: #256f8f;
+}
+
+.bonus-button.claimed {
+  background: #dcecf3;
+  color: #61717c;
 }
 
 .recent-entry-list {

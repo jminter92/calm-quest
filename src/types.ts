@@ -22,6 +22,10 @@ export type XpEventType =
   | 'resisted_craving'
   | 'partial_win'
   | 'stayed_under_cap'
+  | 'over_target_penalty'
+  | 'decaf_at_cafe'
+  | 'decaf_when_tired'
+  | 'decaf_with_people'
   | 'three_day_streak'
   | 'seven_day_streak'
   | 'setback';

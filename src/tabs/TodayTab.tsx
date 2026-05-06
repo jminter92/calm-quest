@@ -1,16 +1,16 @@
 import { MetricCard } from '../components/MetricCard';
 import { prettyDate, toDayKey } from '../lib/dates';
 import { activeDayKeys, capForDay, shotsForDay, streakUnderCap, totalXp } from '../lib/progress';
-import { titleForXp, xpAmounts } from '../lib/xp';
-import type { CalmQuestData } from '../types';
+import { dailyTargetXp, titleForXp, xpAmounts } from '../lib/xp';
+import type { CalmQuestData, XpEventType } from '../types';
 
 interface TodayTabProps {
   data: CalmQuestData;
-  onAwardDailyCap: () => void;
+  onRecordDailyXp: (eventType: XpEventType, amount: number) => void;
   onSetTodayCap: (cap: number | null) => void;
 }
 
-export function TodayTab({ data, onAwardDailyCap, onSetTodayCap }: TodayTabProps) {
+export function TodayTab({ data, onRecordDailyXp, onSetTodayCap }: TodayTabProps) {
   const today = toDayKey();
   const checkin = data.checkins.find((item) => item.day === today);
   const plannedCap = capForDay(data.settings, today);
@@ -22,8 +22,11 @@ export function TodayTab({ data, onAwardDailyCap, onSetTodayCap }: TodayTabProps
   const streak = streakUnderCap(data.caffeineLogs, cap, activeDays);
   const xp = totalXp(data.xpEvents);
   const title = titleForXp(xp);
-  const hasDailyTargetXp = data.xpEvents.some((event) => event.related_date === today && event.event_type === 'stayed_under_cap');
+  const hasDailyTargetXp = data.xpEvents.some((event) =>
+    event.related_date === today && (event.event_type === 'stayed_under_cap' || event.event_type === 'over_target_penalty')
+  );
   const isAtOrBelowTarget = used <= cap;
+  const targetXp = dailyTargetXp(streak);
 
   return (
     <section className="screen">
@@ -81,14 +84,18 @@ export function TodayTab({ data, onAwardDailyCap, onSetTodayCap }: TodayTabProps
       <div className="cap-panel daily-xp-panel">
         <div>
           <h2>Today’s XP</h2>
-          <p className="empty">Stay at or below target: +{xpAmounts.stayed_under_cap} XP</p>
+          <p className="empty">
+            {isAtOrBelowTarget
+              ? `Stay at or below target: +${targetXp} XP. Streak bonus grows up to +7 XP/day.`
+              : `Over target today: ${xpAmounts.over_target_penalty} XP.`}
+          </p>
         </div>
         {hasDailyTargetXp ? (
-          <strong className="xp-status">Claimed today</strong>
+          <strong className="xp-status">Recorded today</strong>
         ) : isAtOrBelowTarget ? (
-          <button type="button" onClick={onAwardDailyCap}>Claim +{xpAmounts.stayed_under_cap} XP</button>
+          <button type="button" onClick={() => onRecordDailyXp('stayed_under_cap', targetXp)}>Claim +{targetXp} XP</button>
         ) : (
-          <strong className="xp-status over">Not available today</strong>
+          <button className="penalty-button" type="button" onClick={() => onRecordDailyXp('over_target_penalty', xpAmounts.over_target_penalty)}>Record {xpAmounts.over_target_penalty} XP</button>
         )}
       </div>
     </section>

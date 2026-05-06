@@ -3,13 +3,13 @@ import { BottomNav } from './components/BottomNav';
 import { addCaffeineLog, addXpEvents, demoUser, loadData, saveCheckin, saveSettings } from './lib/storage';
 import { hasSupabaseConfig, supabase } from './lib/supabase';
 import { toDayKey } from './lib/dates';
-import { xpAmounts } from './lib/xp';
+import { dailyTargetXp, xpAmounts } from './lib/xp';
 import { LogTab } from './tabs/LogTab';
 import { ProgressTab } from './tabs/ProgressTab';
 import { QuestTab } from './tabs/QuestTab';
 import { SettingsTab } from './tabs/SettingsTab';
 import { TodayTab } from './tabs/TodayTab';
-import type { AppUser, CalmQuestData, DrinkType, TabKey, TriggerLabel } from './types';
+import type { AppUser, CalmQuestData, DrinkType, TabKey, TriggerLabel, XpEventType } from './types';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('today');
@@ -91,23 +91,37 @@ export default function App() {
     run(() => addCaffeineLog(user, requireData(), input), 'Caffeine logged. Honest data counts.');
   }
 
-  function awardDailyCap() {
+  function recordDailyXp(eventType: XpEventType, amount: number) {
     const today = toDayKey();
     const current = requireData();
-    const alreadyAwarded = current.xpEvents.some((event) => event.related_date === today && event.event_type === 'stayed_under_cap');
+    const alreadyAwarded = current.xpEvents.some((event) =>
+      event.related_date === today && (event.event_type === 'stayed_under_cap' || event.event_type === 'over_target_penalty')
+    );
     if (alreadyAwarded) {
-      setMessage('Already logged under-plan XP for today.');
+      setMessage('Already recorded daily XP for today.');
       return;
     }
 
-    run(() => addXpEvents(user, current, [{ type: 'stayed_under_cap', amount: xpAmounts.stayed_under_cap, day: today }]), 'Under-plan XP added.');
+    run(() => addXpEvents(user, current, [{ type: eventType, amount, day: today }]), amount >= 0 ? 'Daily XP added.' : 'Daily XP penalty recorded.');
+  }
+
+  function recordBonusXp(eventType: XpEventType, amount: number) {
+    const today = toDayKey();
+    const current = requireData();
+    const alreadyAwarded = current.xpEvents.some((event) => event.related_date === today && event.event_type === eventType);
+    if (alreadyAwarded) {
+      setMessage('Already claimed that bonus today.');
+      return;
+    }
+
+    run(() => addXpEvents(user, current, [{ type: eventType, amount, day: today }]), 'Bonus XP added.');
   }
 
   const screen = {
     today: (
       <TodayTab
         data={data}
-        onAwardDailyCap={awardDailyCap}
+        onRecordDailyXp={recordDailyXp}
         onSetTodayCap={(cap) => run(() => saveCheckin(user, requireData(), { day: toDayKey(), caffeine_cap_override: cap }), 'Today’s target updated.')}
       />
     ),
@@ -115,6 +129,7 @@ export default function App() {
       <LogTab
         data={data}
         onCaffeine={logCaffeine}
+        onBonusXp={recordBonusXp}
       />
     ),
     progress: <ProgressTab data={data} />,
