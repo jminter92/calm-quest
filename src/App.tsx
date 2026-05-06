@@ -1,12 +1,12 @@
 import { type ReactElement, useEffect, useState } from 'react';
 import { BottomNav } from './components/BottomNav';
-import { addCaffeineLog, addXpEvents, demoUser, loadData, saveSettings } from './lib/storage';
+import { addCaffeineLog, addXpEvents, demoUser, loadData, saveCheckin, saveSettings } from './lib/storage';
 import { hasSupabaseConfig, supabase } from './lib/supabase';
 import { toDayKey } from './lib/dates';
 import { xpAmounts } from './lib/xp';
 import { LogTab } from './tabs/LogTab';
-import { MotivationTab } from './tabs/MotivationTab';
 import { ProgressTab } from './tabs/ProgressTab';
+import { QuestTab } from './tabs/QuestTab';
 import { SettingsTab } from './tabs/SettingsTab';
 import { TodayTab } from './tabs/TodayTab';
 import type { AppUser, CalmQuestData, DrinkType, TabKey, TriggerLabel } from './types';
@@ -105,15 +105,20 @@ export default function App() {
 
   const screen = {
     today: (
-      <TodayTab data={data} onAwardDailyCap={awardDailyCap} />
+      <TodayTab
+        data={data}
+        onAwardDailyCap={awardDailyCap}
+        onSetTodayCap={(cap) => run(() => saveCheckin(user, requireData(), { day: toDayKey(), caffeine_cap_override: cap }), 'Today’s target updated.')}
+      />
     ),
     log: (
       <LogTab
+        data={data}
         onCaffeine={logCaffeine}
       />
     ),
     progress: <ProgressTab data={data} />,
-    motivation: <MotivationTab />,
+    quest: <QuestTab data={data} />,
     settings: (
       <SettingsTab
         user={user}

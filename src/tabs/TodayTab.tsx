@@ -7,11 +7,14 @@ import type { CalmQuestData } from '../types';
 interface TodayTabProps {
   data: CalmQuestData;
   onAwardDailyCap: () => void;
+  onSetTodayCap: (cap: number | null) => void;
 }
 
-export function TodayTab({ data, onAwardDailyCap }: TodayTabProps) {
+export function TodayTab({ data, onAwardDailyCap, onSetTodayCap }: TodayTabProps) {
   const today = toDayKey();
-  const cap = capForDay(data.settings, today);
+  const checkin = data.checkins.find((item) => item.day === today);
+  const plannedCap = capForDay(data.settings, today);
+  const cap = checkin?.caffeine_cap_override ?? plannedCap;
   const used = shotsForDay(data.caffeineLogs, today);
   const remaining = Math.max(0, cap - used);
   const percent = Math.min(100, (used / Math.max(cap, 0.5)) * 100);
@@ -50,6 +53,23 @@ export function TodayTab({ data, onAwardDailyCap }: TodayTabProps) {
           <span>{remaining} remaining</span>
           <span>{used > cap ? 'Over plan, no drama. Log it and continue.' : 'Within today’s plan.'}</span>
         </div>
+      </div>
+
+      <div className="cap-panel target-override-panel">
+        <div>
+          <h2>Today’s target</h2>
+          <p className="empty">
+            {checkin?.caffeine_cap_override == null ? `Using taper plan: ${plannedCap} shots.` : `Override set for today. Taper plan is ${plannedCap} shots.`}
+          </p>
+        </div>
+        <div className="target-control">
+          <button type="button" onClick={() => onSetTodayCap(Math.max(0, cap - 0.5))}>-0.5</button>
+          <strong>{cap}</strong>
+          <button type="button" onClick={() => onSetTodayCap(cap + 0.5)}>+0.5</button>
+        </div>
+        {checkin?.caffeine_cap_override != null ? (
+          <button className="secondary" type="button" onClick={() => onSetTodayCap(null)}>Use taper plan</button>
+        ) : null}
       </div>
 
       <div className="metric-grid">

@@ -114,6 +114,9 @@ export async function saveCheckin(user: AppUser, current: CalmQuestData, patch: 
     id: existing?.id ?? id(),
     user_id: user.id,
     day,
+    caffeine_cap_override: Object.prototype.hasOwnProperty.call(patch, 'caffeine_cap_override')
+      ? patch.caffeine_cap_override ?? null
+      : existing?.caffeine_cap_override ?? null,
     mood: patch.mood ?? existing?.mood ?? null,
     energy: patch.energy ?? existing?.energy ?? null,
     sleep_quality: patch.sleep_quality ?? existing?.sleep_quality ?? null,

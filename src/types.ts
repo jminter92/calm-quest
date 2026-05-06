@@ -1,4 +1,4 @@
-export type TabKey = 'today' | 'log' | 'progress' | 'motivation' | 'settings';
+export type TabKey = 'today' | 'log' | 'progress' | 'quest' | 'settings';
 
 export type DrinkType = 'coffee' | 'tea' | 'energy drink' | 'cola' | 'decaf' | 'other';
 
@@ -70,6 +70,7 @@ export interface DailyCheckin {
   id: string;
   user_id: string;
   day: string;
+  caffeine_cap_override: number | null;
   mood: number | null;
   energy: number | null;
   sleep_quality: number | null;

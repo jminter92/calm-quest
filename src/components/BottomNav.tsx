@@ -4,7 +4,7 @@ const tabs: Array<{ key: TabKey; label: string; icon: string }> = [
   { key: 'today', label: 'Today', icon: 'O' },
   { key: 'log', label: 'Log', icon: '+' },
   { key: 'progress', label: 'Progress', icon: '=' },
-  { key: 'motivation', label: 'Motivation', icon: '"' },
+  { key: 'quest', label: 'Quest', icon: '~' },
   { key: 'settings', label: 'Settings', icon: '*' }
 ];
 

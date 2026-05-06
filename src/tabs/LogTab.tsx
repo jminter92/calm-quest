@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { dateWithTime, timeValue, toDayKey } from '../lib/dates';
-import type { DrinkType, TriggerLabel } from '../types';
+import type { CalmQuestData, DrinkType, TriggerLabel } from '../types';
 
 const drinkTypes: DrinkType[] = ['coffee', 'tea', 'energy drink', 'cola', 'decaf', 'other'];
 const triggers: TriggerLabel[] = [
@@ -25,16 +25,19 @@ const timeShortcuts = [
 ];
 
 interface LogTabProps {
+  data: CalmQuestData;
   onCaffeine: (input: { logged_at: string; shots: number; drink_type: DrinkType; note: string | null; trigger_label: TriggerLabel | null }) => void;
 }
 
-export function LogTab({ onCaffeine }: LogTabProps) {
+export function LogTab({ data, onCaffeine }: LogTabProps) {
   const [caffeineDay, setCaffeineDay] = useState(toDayKey());
   const [caffeineTime, setCaffeineTime] = useState(timeValue());
   const [shots, setShots] = useState(1);
   const [drinkType, setDrinkType] = useState<DrinkType>('coffee');
   const [caffeineNote, setCaffeineNote] = useState('');
   const [linkedTrigger, setLinkedTrigger] = useState<TriggerLabel | ''>('');
+  const [savedNotice, setSavedNotice] = useState('');
+  const recentLogs = data.caffeineLogs.slice(0, 5);
 
   function submitCaffeine(event: FormEvent) {
     event.preventDefault();
@@ -46,6 +49,8 @@ export function LogTab({ onCaffeine }: LogTabProps) {
       trigger_label: linkedTrigger || null
     });
     setCaffeineNote('');
+    setSavedNotice(`Saved ${shots} shot${shots === 1 ? '' : 's'}.`);
+    window.setTimeout(() => setSavedNotice(''), 2200);
   }
 
   return (
@@ -82,8 +87,35 @@ export function LogTab({ onCaffeine }: LogTabProps) {
         </select></label>
         <label>Note<textarea value={caffeineNote} onChange={(event) => setCaffeineNote(event.target.value)} placeholder="Optional" /></label>
         <button type="submit">Save caffeine</button>
+        {savedNotice ? <p className="save-notice">{savedNotice} Recent entries will update below.</p> : null}
       </form>
 
+      <div className="section">
+        <h2>Recent entries</h2>
+        {recentLogs.length === 0 ? (
+          <p className="empty">Your latest caffeine logs will appear here.</p>
+        ) : (
+          <ul className="recent-entry-list">
+            {recentLogs.map((log) => (
+              <li key={log.id}>
+                <div>
+                  <strong>{log.shots} shot {log.drink_type}</strong>
+                  <span>{formatLogTime(log.logged_at)}</span>
+                </div>
+                {log.trigger_label ? <small>{log.trigger_label}</small> : null}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
+}
+
+function formatLogTime(value: string) {
+  return new Intl.DateTimeFormat(undefined, {
+    weekday: 'short',
+    hour: 'numeric',
+    minute: '2-digit'
+  }).format(new Date(value));
 }

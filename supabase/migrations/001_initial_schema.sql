@@ -45,6 +45,7 @@ create table if not exists daily_checkins (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references profiles(id) on delete cascade,
   day date not null,
+  caffeine_cap_override numeric,
   mood int check (mood between 1 and 5),
   energy int check (energy between 1 and 5),
   sleep_quality int check (sleep_quality between 1 and 5),
